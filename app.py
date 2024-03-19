@@ -60,7 +60,7 @@ def run_server(host, port):
         if client_id!=id  and client_secret!=secret:
             response = """HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<h1>Client ID or Client Secret missing</h1>"""
             response = response.encode('utf-8')
-        elif  url == '/api/f473gf3/devops/deploy':
+        elif  url == env['SecretUrl']:
             response = create_response(script_path)
         else:
             response = """HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<h1>Page missing</h1>"""
