@@ -56,8 +56,9 @@ def run_server(host, port):
         id = env.get('ClientId')
         secret = env.get('ClientSecret')
         script_path = env.get('ScriptPath')
+        print(id, client_id)
 
-        if client_id!=id  or client_secret!=secret:
+        if (client_id!=id  or client_secret!=secret):
             response = """HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<h1>Client ID or Client Secret missing</h1>"""
             response = response.encode('utf-8')
         elif  url == env['SecretUrl']:
