@@ -55,6 +55,8 @@ def run_server(host, port):
         client_secret = headers.get('Client-Secret')
         id = env.get('ClientId')
         secret = env.get('ClientSecret')
+        print(id, client_id)
+        print(secret, client_secret)
         script_path = env.get('ScriptPath')
 
         if (client_id!=id  or client_secret!=secret):
