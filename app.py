@@ -9,7 +9,6 @@ def execute_bash_script(script_path):
     except subprocess.CalledProcessError as e:
         print(f"Error executing bash script: {e}")
 
-
 def read_env_file(filename):
     env_vars = {}
     with open(filename, 'r') as file:
@@ -40,6 +39,12 @@ def run_server(host, port):
     server_socket.listen(1)
     env = read_env_file('.env')
 
+    # Parse URLs and their corresponding script paths from the environment variables
+    url_script_map = {}
+    for key, value in env.items():
+        if key.startswith('ScriptUrl'):
+            url_script_map[value] = env.get(f'ScriptPath{key[-1]}')  # Assuming paths are ScriptPath1, ScriptPath2, etc.
+
     print(f"Server listening on {host}:{port}")
 
     while True:
@@ -57,16 +62,17 @@ def run_server(host, port):
         secret = env.get('ClientSecret')
         print(id, client_id)
         print(secret, client_secret)
-        script_path = env.get('ScriptPath')
 
-        if (client_id!=id  or client_secret!=secret):
+        if (client_id != id or client_secret != secret):
             response = """HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<h1>Client ID or Client Secret missing</h1>"""
             response = response.encode('utf-8')
-        elif  url == env['SecretUrl']:
+        elif url in url_script_map:
+            script_path = url_script_map[url]
             response = create_response(script_path)
         else:
             response = """HTTP/1.1 400 Bad Request\r\nContent-Type: text/html\r\n\r\n<h1>Page missing</h1>"""
             response = response.encode('utf-8')
+
         print(response)
         client_conn.sendall(response)
         client_conn.close()
